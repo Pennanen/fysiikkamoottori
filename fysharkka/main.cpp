@@ -1,9 +1,10 @@
 #include "glut.h"
 #include <vector>
 #include <chrono>
+#include <math.h>
 #include <glm.hpp>
 #define PI 3.14159265
-
+#define GRAVITY 0.00000981
 class Box
 {
 public:
@@ -11,8 +12,6 @@ public:
     ~Box();
     float cx;
     float cy;
-
-    float vx,vy;
 
     float width;
     float height;
@@ -24,7 +23,8 @@ public:
     float v2[2];
     float v3[2];
     float v4[2];
-    float velocity;
+    float velocity[2];
+    float angularVelocity = 0.0f;
     float acceleration;
     float mass;
     float force = mass*acceleration;
@@ -32,20 +32,21 @@ public:
     void Update(double dt);
     void RotatePoint(float* v, float* _angle);
     void Rotate(float* _angle);
-    void applyGravity(double dt);
+    void applyGravity(float* _angle,float dt);
+    void collision(Box a, Box b);
 };
 Box::Box(float _cx, float _cy, float _width, float _height,bool _static)
 {
     cx = _cx;
     cy = _cy;
-    vx = 0.f;
-    vy = 0.f;
     width = _width;
     height = _height;
     staticObject = _static;
-    velocity = 0;
+    velocity[0] = 0;
+    velocity[1] = 0;
+    angularVelocity = 11;
     acceleration = 0;
-    angle = 90.f * PI / 180.f;
+    angle = 0.0f * PI / 180.f;
     v1[0] = cx - (width / 2.f);
     v1[1] = cy - (height / 2.f);
     v2[0] = cx + (width / 2.f);
@@ -61,7 +62,9 @@ Box::~Box()
 }
 void Box::Draw()
 {
-    glColor3f(0.5f, 0.f, 1.f);
+    if (!staticObject) { glColor3f(0.9f, 0.2f, 1.2f); }
+    else { glColor3f(0.5f, 0.2f, 1.f); }
+    
     glBegin(GL_QUADS);
     glVertex2f(v1[0], v1[1]);
     glVertex2f(v2[0], v2[1]);
@@ -87,20 +90,33 @@ void Box::Rotate(float* _angle)
     RotatePoint(v2, _angle);
     RotatePoint(v3, _angle);
     RotatePoint(v4, _angle);
+    angle = 0.f;
 }
-void Box::applyGravity(double dt)
+void Box::applyGravity(float* _angle, float dt)
 {
-    cy += vy;
+    velocity[1] -= GRAVITY*dt;
+    cy += velocity[1];
+    v1[1] += velocity[1];
+    v2[1] += velocity[1];
+    v3[1] += velocity[1];
+    v4[1] += velocity[1];
+}
+void Box::collision(Box a, Box b)
+{
+
+
+
 }
 void Box::Update(double dt)
 {
-    //force = mass * acceleration;
+    
     if (!staticObject)
     {
-        angle = 0.5f * (PI / 180.f)*dt;
         Rotate(&angle);
-        applyGravity(dt);
-        vy = -0.1;
+      //  if (angularVelocity != 0) {angularVelocity -= 1 / 12 * mass*(width*width + height*height); };
+        angle += angularVelocity * (PI / 180.f)*dt;
+        //Rotate(&angle);
+        applyGravity(&angle,dt);
     }
     Draw();
 }
