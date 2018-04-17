@@ -1,10 +1,10 @@
 #include "glut.h"
 #include <vector>
 #include <chrono>
-#include <math.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #define PI 3.14159265
 #define GRAVITY 0.00000981
+
 class Box
 {
 public:
@@ -32,8 +32,11 @@ public:
     void Update(double dt);
     void RotatePoint(float* v, float* _angle);
     void Rotate(float* _angle);
-    void applyGravity(float* _angle,float dt);
-    void collision(Box a, Box b);
+    void applyForces(float* _angle,float dt);
+    void handleCollision(Box a, Box b);
+
+    bool sameSide(glm::vec3 p1, glm::vec3 p2, glm::vec3 a, glm::vec3 b);
+    bool pointInRectangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d);
 };
 Box::Box(float _cx, float _cy, float _width, float _height,bool _static)
 {
@@ -44,7 +47,7 @@ Box::Box(float _cx, float _cy, float _width, float _height,bool _static)
     staticObject = _static;
     velocity[0] = 0;
     velocity[1] = 0;
-    angularVelocity = 11;
+    angularVelocity = 0;
     acceleration = 0;
     angle = 0.0f * PI / 180.f;
     v1[0] = cx - (width / 2.f);
@@ -92,16 +95,36 @@ void Box::Rotate(float* _angle)
     RotatePoint(v4, _angle);
     angle = 0.f;
 }
-void Box::applyGravity(float* _angle, float dt)
+void Box::applyForces(float* _angle, float dt)
 {
     velocity[1] -= GRAVITY*dt;
+
+    cx += velocity[0];
+    v1[0] += velocity[0];
+    v2[0] += velocity[0];
+    v3[0] += velocity[0];
+    v4[0] += velocity[0];
+
     cy += velocity[1];
     v1[1] += velocity[1];
     v2[1] += velocity[1];
     v3[1] += velocity[1];
     v4[1] += velocity[1];
+    angle += angularVelocity * (PI / 180.f)*dt;
 }
-void Box::collision(Box a, Box b)
+bool Box::sameSide(glm::vec3 p1, glm::vec3 p2, glm::vec3 a, glm::vec3 b)
+{
+    glm::vec3 cp1 = glm::cross(b - a, p1 - a);
+    glm::vec3 cp2 = glm::cross(b - a, p2 - a);
+    if (glm::dot(cp1, cp2) >= 0) { return true; }
+    else { return false; };
+}
+bool Box::pointInRectangle(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d)
+{
+    if (sameSide(p, a, b, c) && sameSide(p, b, a, c) && sameSide(p, c, a, b)) { return true; }
+    else { return false; };
+}
+void Box::handleCollision(Box a, Box b)
 {
 
 
@@ -112,11 +135,17 @@ void Box::Update(double dt)
     
     if (!staticObject)
     {
-        Rotate(&angle);
-      //  if (angularVelocity != 0) {angularVelocity -= 1 / 12 * mass*(width*width + height*height); };
-        angle += angularVelocity * (PI / 180.f)*dt;
-        //Rotate(&angle);
-        applyGravity(&angle,dt);
+        glm::vec3 p = { cx,cy+1,0 };
+        glm::vec3 a = { v1[0],v1[1],0 };
+        glm::vec3 b = { v2[0],v2[1],0 };
+        glm::vec3 c = { v3[0],v3[1],0 };
+        glm::vec3 d = { v4[0],v4[1],0 };
+        if (!pointInRectangle(p,a,b,c,d))
+        {
+            angularVelocity = 0.5;
+            Rotate(&angle);
+            applyForces(&angle, dt);
+        }
     }
     Draw();
 }

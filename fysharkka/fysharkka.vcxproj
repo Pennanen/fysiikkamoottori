@@ -22,13 +22,13 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{8E787B92-B523-4E2A-9E9D-2C1F709FE2AC}</ProjectGuid>
     <RootNamespace>fysharkka</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -70,11 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\RichardRau\Desktop\fyshark\fysharkka;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\RichardRau\Desktop\fyshark\fysharkka;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\MatiasPen\Desktop\fysiikkamoottori\fysharkka;C:\Users\MatiasPen\Desktop\fysiikkamoottori;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\MatiasPen\Desktop\fysiikkamoottori\fysharkka;C:\Users\RichardRau\Desktop\fyshark\fysharkka;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\MatiasPen\Desktop\fyshark-master\glm;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\MatiasPen\Desktop\fysiikkamoottori;C:\Users\MatiasPen\Desktop\fyshark-master\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\MatiasPen\Desktop\fysiikkamoottori\glm;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
